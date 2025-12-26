@@ -1,29 +1,33 @@
 import makeWASocket, {
   useMultiFileAuthState,
-  DisconnectReason
-} from "@whiskeysockets/baileys"
-import Pino from "pino"
-import fs from "fs"
+  fetchLatestBaileysVersion
+} from "@whiskeysockets/baileys";
+import Pino from "pino";
+import fs from "fs";
+
+let sock;
 
 export async function startBot(number) {
-  const session = "./session"
+  const sessionDir = "./session";
 
-  if (!fs.existsSync(session)) fs.mkdirSync(session)
+  if (!fs.existsSync(sessionDir)) fs.mkdirSync(sessionDir);
 
-  const { state, saveCreds } = await useMultiFileAuthState(session)
+  const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
 
-  const sock = makeWASocket({
-    logger: Pino({ level: "silent" }),
+  const { version } = await fetchLatestBaileysVersion();
+
+  sock = makeWASocket({
+    version,
     auth: state,
-    browser: ["Empire-XMD", "Chrome", "1.0"]
-  })
+    logger: Pino({ level: "silent" })
+  });
 
-  sock.ev.on("creds.update", saveCreds)
+  sock.ev.on("creds.update", saveCreds);
 
-  if (!sock.authState.creds.registered) {
-    const code = await sock.requestPairingCode(number)
-    return code
-  }
+  const code = await sock.requestPairingCode(number);
+  return code;
+}
 
-  return "Already Paired"
+export function getSock() {
+  return sock;
 }
