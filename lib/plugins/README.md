@@ -1,12 +1,11 @@
 # Empire Pair Bot
 
-## Deploy
-- Platform: Render
-- Start Command: npm start
+## Install
+npm install
 
-## Pair
+## Run
+npm start
+
+## Pair API
 POST /pair
-JSON:
-{
-  "number": "919XXXXXXXXX"
-}
+Body: { "number": "919XXXXXXXXX" }
