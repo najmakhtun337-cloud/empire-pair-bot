@@ -1,2 +1,5 @@
-export const PORT = process.env.PORT || 3000
-export const BOT_NAME = "Empire-XMD"
+export default {
+  botName: "Empire XMD BOT",
+  prefix: ".",
+  owner: ["919046579718"]
+};
